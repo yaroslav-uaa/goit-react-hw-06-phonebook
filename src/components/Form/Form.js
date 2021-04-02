@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import addContact from '../../redux/contacts/actions/addContacts';
 import f from './Form.module.css';
+import PropTypes from 'prop-types';
 
 export class Form extends Component {
   state = {
@@ -10,16 +11,17 @@ export class Form extends Component {
   };
 
   handleSubmit = e => {
+    const { onSubmit, contacts } = this.props;
     e.preventDefault();
-    this.props.getContact({ ...this.state, id: uuidv4() });
-    this.setState({ name: '', number: '' });
-    
-  }
-  
+    const originContact = contacts.find(item => item.name === this.state.name);
+    return originContact
+      ? alert(`${this.state.name} is already used`)
+      : onSubmit({ ...this.state });
+  };
+
   handleNameChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
-  }
-
+  };
 
   render() {
     const { name, number } = this.state;
@@ -33,6 +35,8 @@ export class Form extends Component {
             value={name}
             placeholder="Enter your name"
             onChange={this.handleNameChange}
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Ім'я може містити тільки букви, апострофи, тире і пробіли. Наприклад Буся, Буся Красотуся, Буся ля Красотуся і т.д."
             required
           />
         </label>
@@ -44,17 +48,29 @@ export class Form extends Component {
             value={number}
             placeholder="Enter your number"
             onChange={this.handleNameChange}
+            pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
+            title="Номер телефона повинен складатися з 11-12 цифр і може містити цифри, пробіли, тире, пузаті скобки і може починатися з +"
             required
           />
         </label>
-        <button type="submit" className={f.btn}>Add contact</button>
+        <button type="submit" className={f.btn}>
+          Add contact
+        </button>
       </form>
     );
   }
 }
 
 Form.propTypes = {
-  getContact: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
-export default Form;
+const mapStateToProps = state => ({
+  contacts: state.contacts.items,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: newContact => dispatch(addContact(newContact)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
