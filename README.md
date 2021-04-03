@@ -1,1 +1,1 @@
-Firs commit - init redux
+First commit - init redux Second commit - redux toolkit

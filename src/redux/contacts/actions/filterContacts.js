@@ -1,8 +1,8 @@
-import types from '../contacts-types';
+// import types from '../contacts-types';
 
-const filterContacts = value => ({
-  type: types.CHANGE_FILTER,
-  payload: value,
-});
+// const filterContacts = value => ({
+//   type: types.CHANGE_FILTER,
+//   payload: value,
+// });
 
-export default filterContacts;
+// export default filterContacts;
