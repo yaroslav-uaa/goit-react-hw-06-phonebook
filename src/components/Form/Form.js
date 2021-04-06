@@ -13,7 +13,9 @@ export class Form extends Component {
   handleSubmit = e => {
     const { onSubmit, contacts } = this.props;
     e.preventDefault();
-    const originContact = contacts.find(item => item.name === this.state.name);
+    const originContact = contacts.find(
+      item => item.name.toLowerCase() === this.state.name.toLowerCase(),
+    );
     return originContact
       ? alert(`${this.state.name} is already used`)
       : onSubmit({ ...this.state });
